@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+import csv, datetime, calendar, os
+
+from datetime import timedelta
+
+def monthyear(month,year):
+	daymonth = str(datetime.date(year, month, 1)).split("-")
+	daymonth.pop(2)
+	daymonth.reverse()
+	return "-".join(daymonth)
+def nextmonthyear(month,year):
+	delta=timedelta(days=32)
+	daymonth = str(datetime.date(year, month, 1)+delta).split("-")
+	daymonth.pop(2)
+	daymonth.reverse()
+	return "-".join(daymonth)
+
+def days_in_month(month,year):
+	num_days = calendar.monthrange(year, month)[1]
+	return list([datetime.date(year, month, day) for day in range(1, num_days+1)])
+
+def makenice(table):
+	table=list(table)
+	table_new=[]
+	if len(table[0])<2:
+		for row in table:
+			table_new.append([row[0],""])
+	else:
+		table_new=table
+	table_newer=[]
+	for row in table_new:
+		row_new=[row[0], row[1].split()]
+		row_newer=[]
+		for i in row_new[1]:
+			if len(i)>2:
+				j=i.split("-")
+				i_new=list(range(int(j[0]),int(j[1])+1))
+				row_newer.extend(i_new)
+			else:
+				row_newer.append(int(i))
+		row_new.pop(1)
+		row_new.append(row_newer)
+		table_newer.append(row_new)
+	return table_newer
+
+def isavailable(table, i, k):
+	unavailable = table[i][1]
+	for j in unavailable:
+		if j==k:
+			return 0
+	return 1
+	
+file=input("Enter Unavailability List:")# We are assumsing that this list is ordered by how long ago it was that a worker has done kitchen duty (descending). If you have used this program last month fill out "unavailability_mm-yyyy.csv" and input it.
+with open('unavailability/'+file,'rt')as f:
+  table = csv.reader(f)
+  table= makenice(table)
+  #table=[]
+  #for row in data:
+  #	table.append(row)
+  n=len(table)
+  workers=[]
+  m=int(input("Enter month:"))
+  y=int(input("Enter year:"))
+  days=days_in_month(m,y)
+  d=len(days)
+  kitchen_schedule=[]
+  bottle_schedule=[]
+  for k in range(1, d+1):
+  	indi=0
+  	if days[k-1].weekday()==5:
+  		for i in range(0,n):
+  			if isavailable(table, i, k):
+  				if indi==0:
+  					w=table[i]
+  					table.pop(i)
+  					table.append(w)
+  					indi=indi+1
+  					kitchen_schedule.append([w[0], str(days[k-1])])
+  				if indi ==1:
+  					w=table[i]
+  					table.pop(i)
+  					table.append(w)
+  					indi=indi+1
+  					bottle_schedule.append([w[0], str(days[k-1])])
+  				if indi ==2 and bottle_schedule[-1][0]!=table[i][i]:
+  					w=table[i]
+  					table.pop(i)
+  					table.append(w)
+  					indi=indi+1
+  					bottle_schedule.append([w[0], str(days[k-1])])
+  		if indi<3:
+  			bottle_schedule.append(["nobody", str(days[k-1])])
+  		if indi<2:
+  			bottle_schedule.append(["nobody", str(days[k-1])])
+  		if indi== 0:
+  			kitchen_schedule.append(["nobody", str(days[k-1])])
+  	else:
+	  	for i in range(0,n):
+	  		if isavailable(table, i, k) and indi==0:
+	  			w=table[i]
+	  			table.pop(i)
+	  			table.append(w)
+	  			indi=1
+	  			kitchen_schedule.append([w[0], str(days[k-1])])
+	  	if indi==0:
+	  		kitchen_schedule.append(["nobody", str(days[k-1])])
+  with open('kitchen_schedule/kitchen_schedule_'+monthyear(m,y)+'.csv', 'w') as csvfile: #The schedule will be saved in the directory: schedule
+  	schedulewriter=csv.writer(csvfile, dialect='excel')
+  	schedulewriter.writerow(["Kitchen schedule for "+str(m)+"-"+str(y)])
+  	schedulewriter.writerows(kitchen_schedule)
+  with open('bottle_schedule/bottle_schedule_'+monthyear(m,y)+'.csv', 'w') as csvfile: #The schedule will be saved in the directory: schedule
+  	schedulewriter=csv.writer(csvfile, dialect='excel')
+  	schedulewriter.writerow(["Bottle schedule for "+str(m)+"-"+str(y)])
+  	schedulewriter.writerows(bottle_schedule)  
+  	new_list=[[row[0]] for row in table]
+  with open('unavailability/unavailability_'+nextmonthyear(m,y)+'.csv', 'w') as csvfile:#The list of workers sorted by how long ago it was that they have done kitchen duty will be saved in the directory: unavailability. Fill this out with the days in which the person is unavailable.
+  	listwriter=csv.writer(csvfile, dialect='excel')
+  	listwriter.writerows(new_list)
+kschedule=open('kitchen_schedule/kitchen_schedule_'+monthyear(m,y)+'.csv')
+print(kschedule.read())
+bschedule=open('bottle_schedule/bottle_schedule_'+monthyear(m,y)+'.csv')
+print(bschedule.read())
+
+
