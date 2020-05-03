@@ -23,29 +23,29 @@ def days_in_month(month,year):
 def makenice(table):
 	table=list(table)
 	table_new=[]
-	if len(table[0])<2:
+	if len(table[0])<3:
 		for row in table:
-			table_new.append([row[0],""])
+			table_new.append([row[0],row[1],""])
 	else:
 		table_new=table
 	table_newer=[]
 	for row in table_new:
-		row_new=[row[0], row[1].split()]
+		row_new=[row[0], row[1] ,row[2].split()]
 		row_newer=[]
-		for i in row_new[1]:
+		for i in row_new[2]:
 			if len(i)>2:
 				j=i.split("-")
 				i_new=list(range(int(j[0]),int(j[1])+1))
 				row_newer.extend(i_new)
 			else:
 				row_newer.append(int(i))
-		row_new.pop(1)
+		row_new.pop(2)
 		row_new.append(row_newer)
 		table_newer.append(row_new)
 	return table_newer
 
 def isavailable(table, i, k):
-	unavailable = table[i][1]
+	unavailable = table[i][2]
 	for j in unavailable:
 		if j==k:
 			return 0
@@ -76,25 +76,25 @@ with open('unavailability/'+file,'rt')as f:
   					table.pop(i)
   					table.append(w)
   					indi=indi+1
-  					kitchen_schedule.append([w[0], str(days[k-1])])
+  					kitchen_schedule.append([w[0], w[1] , str(days[k-1])])
   				if indi ==1:
   					w=table[i]
   					table.pop(i)
   					table.append(w)
   					indi=indi+1
-  					bottle_schedule.append([w[0], str(days[k-1])])
+  					bottle_schedule.append([w[0], w[1] ,str(days[k-1])])
   				if indi ==2 and bottle_schedule[-1][0]!=table[i][i]:
   					w=table[i]
   					table.pop(i)
   					table.append(w)
   					indi=indi+1
-  					bottle_schedule.append([w[0], str(days[k-1])])
+  					bottle_schedule.append([w[0],w[1] , str(days[k-1])])
   		if indi<3:
-  			bottle_schedule.append(["nobody", str(days[k-1])])
+  			bottle_schedule.append(["nobody", "0", str(days[k-1])])
   		if indi<2:
-  			bottle_schedule.append(["nobody", str(days[k-1])])
+  			bottle_schedule.append(["nobody", "0", str(days[k-1])])
   		if indi== 0:
-  			kitchen_schedule.append(["nobody", str(days[k-1])])
+  			kitchen_schedule.append(["nobody", "0", str(days[k-1])])
   	else:
 	  	for i in range(0,n):
 	  		if isavailable(table, i, k) and indi==0:
@@ -102,16 +102,18 @@ with open('unavailability/'+file,'rt')as f:
 	  			table.pop(i)
 	  			table.append(w)
 	  			indi=1
-	  			kitchen_schedule.append([w[0], str(days[k-1])])
+	  			kitchen_schedule.append([w[0], w[1], str(days[k-1])])
 	  	if indi==0:
-	  		kitchen_schedule.append(["nobody", str(days[k-1])])
+	  		kitchen_schedule.append(["nobody","0" ,str(days[k-1])])
   with open('kitchen_schedule/kitchen_schedule_'+monthyear(m,y)+'.csv', 'w') as csvfile: #The schedule will be saved in the directory: schedule
   	schedulewriter=csv.writer(csvfile, dialect='excel')
   	schedulewriter.writerow(["Kitchen schedule for "+str(m)+"-"+str(y)])
+  	schedulewriter.writerow(["Name", "Room", "Day"])
   	schedulewriter.writerows(kitchen_schedule)
   with open('bottle_schedule/bottle_schedule_'+monthyear(m,y)+'.csv', 'w') as csvfile: #The schedule will be saved in the directory: schedule
   	schedulewriter=csv.writer(csvfile, dialect='excel')
   	schedulewriter.writerow(["Bottle schedule for "+str(m)+"-"+str(y)])
+  	schedulewriter.writerow(["Name", "Room", "Day"])
   	schedulewriter.writerows(bottle_schedule)  
   	new_list=[[row[0]] for row in table]
   with open('unavailability/unavailability_'+nextmonthyear(m,y)+'.csv', 'w') as csvfile:#The list of workers sorted by how long ago it was that they have done kitchen duty will be saved in the directory: unavailability. Fill this out with the days in which the person is unavailable.
