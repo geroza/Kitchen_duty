@@ -3,7 +3,7 @@ Script for scheduling kitchen duties
 ## 1. Initial setup.
 Get a -csv list of all the people in the house sorted by how long ago it was that they have done kitchen duty(the ones who didn't do it the longest on the top, the ones that did it most recently on the bottom), with their room numbers in the next column, and write the unavailabilities in the next column. The unavailabilities have to days of the month written either as lone numbers or as an interval of days, the entries must be separated by spaces. For example:
 
-|Name  |Unavailability|
+||||
 |------|-------|
 | Anna |1| 12 23 |
 | Bob  |2| 14 18-24|
