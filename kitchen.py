@@ -70,25 +70,24 @@ with open('unavailability/'+file,'rt')as f:
   	indi=0
   	if days[k-1].weekday()==5:
   		for i in range(0,n):
-  			if isavailable(table, i, k):
-  				if indi==0:
-  					w=table[i]
-  					table.pop(i)
-  					table.append(w)
-  					indi=indi+1
-  					kitchen_schedule.append([w[0], w[1] , str(days[k-1])])
-  				if indi ==1:
-  					w=table[i]
-  					table.pop(i)
-  					table.append(w)
-  					indi=indi+1
-  					bottle_schedule.append([w[0], w[1] ,str(days[k-1])])
-  				if indi ==2 and bottle_schedule[-1][0]!=table[i][i]:
-  					w=table[i]
-  					table.pop(i)
-  					table.append(w)
-  					indi=indi+1
-  					bottle_schedule.append([w[0],w[1] , str(days[k-1])])
+  			if isavailable(table, i, k) and indi==0:
+  				w=table[i]
+  				table.pop(i)
+  				table.append(w)
+  				indi=indi+1
+  				kitchen_schedule.append([w[0], w[1] , str(days[k-1])])
+  			if isavailable(table, i, k) and indi ==1:
+  				w=table[i]
+  				table.pop(i)
+  				table.append(w)
+  				indi=indi+1
+  				bottle_schedule.append([w[0], w[1] ,str(days[k-1])])
+  			if isavailable(table, i, k) and indi ==2 and bottle_schedule[-1][0]!=table[i][0]:
+  				w=table[i]
+  				table.pop(i)
+  				table.append(w)
+  				indi=indi+1
+  				bottle_schedule.append([w[0],w[1], str(days[k-1])])
   		if indi<3:
   			bottle_schedule.append(["nobody", "0", str(days[k-1])])
   		if indi<2:
