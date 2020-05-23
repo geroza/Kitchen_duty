@@ -21,6 +21,7 @@ In order to send a personalized email to everyone on the Kitchen and Bottle duty
 | Anna | anna@email.com |
 | Biff  | biff@email.com|
 | Chad | chad@email.com|
+
 You will also need to provide an gmail account (with IMAP/POP enabled, [less secure apps acces allowed](https://support.google.com/accounts/answer/6010255), [app-specific passwords created](https://support.google.com/accounts/answer/185833)(if you have two factor authorization turned on)) and it's password. I recommed using a throwaway email, since this is not the most secure. If you get a authentication error try [Display unlock capcha](https://accounts.google.com/DisplayUnlockCaptcha).
 ## 4 Improvements
 If you have improvement ideas leave a comment or edit the script.
