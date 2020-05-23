@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import csv, datetime, calendar, os
+import csv, datetime, calendar, os, smtplib, getpass
 
 from datetime import timedelta
 
@@ -51,7 +51,7 @@ def isavailable(table, i, k):
 			return 0
 	return 1
 	
-file=input("Enter Unavailability List:")# We are assumsing that this list is ordered by how long ago it was that a worker has done kitchen duty (descending). If you have used this program last month fill out "unavailability_mm-yyyy.csv" and input it.
+file=input("Enter Unavailability List: ")# We are assumsing that this list is ordered by how long ago it was that a worker has done kitchen duty (descending). If you have used this program last month fill out "unavailability_mm-yyyy.csv" and input it.
 with open('unavailability/'+file,'rt')as f:
   table = csv.reader(f)
   table= makenice(table)
@@ -60,8 +60,8 @@ with open('unavailability/'+file,'rt')as f:
   #	table.append(row)
   n=len(table)
   workers=[]
-  m=int(input("Enter month:"))
-  y=int(input("Enter year:"))
+  m=int(input("Enter month: "))
+  y=int(input("Enter year: "))
   days=days_in_month(m,y)
   d=len(days)
   kitchen_schedule=[]
@@ -122,5 +122,63 @@ kschedule=open('kitchen_schedule/kitchen_schedule_'+monthyear(m,y)+'.csv')
 print(kschedule.read())
 bschedule=open('bottle_schedule/bottle_schedule_'+monthyear(m,y)+'.csv')
 print(bschedule.read())
+send=input("Send emails?[y/n] ")
+if send=='y' or send=='yes':
+  emails=input("Enter email list: ")
+  emailsreader = csv.reader(open(emails))
+  email_dict={}
+  for row in emailsreader:
+    name= row[0]
+    if name in email_dict:
+      pass
+    email_dict[name]=row[1]
+  print(email_dict)
+  import smtplib
+  # set up the SMTP server
+  gmail_user = input("Enter your gmail address: ")
+  gmail_password = getpass.getpass("Input password: ")
+  
+  for row in kitchen_schedule:
+    name=row[0].split()[0]
+    sent_from = gmail_user
+    to = email_dict[row[0]]
+    subject = 'Kitchen Duty'
+    body = 'Hi '+name+',\n your kitchen duty is on the '+row[2]+'\n Save the date!\n\n Your friendly student council.'
+    email_text = """\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+    """ % (sent_from, to, subject, body)
+    s = smtplib.SMTP(host='smtp.gmail.com.', port=587)
+    s.ehlo()
+    s.starttls()
+    s.login(gmail_user,gmail_password)
+    s.sendmail(sent_from, to, email_text)
+    s.close()
+    print('Email sent to '+row[0])
+  for row in bottle_schedule:
+    name=row[0].split()
+    name=name[0]
+    sent_from = gmail_user
+    to = email_dict[row[0]]
+    subject = 'Bottle Duty'
+    body = 'Hi '+name+',\n your bottle duty is on the '+row[2]+'\n Save the date!\n\n Your friendly student council.'
+    email_text = """\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+    """ % (sent_from, to, subject, body)
+    s = smtplib.SMTP(host='smtp.gmail.com.', port=587)
+    s.ehlo()
+    s.starttls()
+    s.login(gmail_user,gmail_password)
+    s.sendmail(sent_from, to, email_text)
+    s.close()
+    print('Email sent to '+row[0])
+
 
 
