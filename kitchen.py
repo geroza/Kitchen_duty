@@ -145,12 +145,12 @@ if send=='y' or send=='yes':
     subject = 'Kitchen Duty'
     body = 'Hi '+name+',\n your kitchen duty is on the '+row[2]+'\n Save the date!\n\n Your friendly student council.'
     email_text = """\
-    From: %s
-    To: %s
-    Subject: %s
+From: %s
+To: %s
+Subject: %s
 
-    %s
-    """ % (sent_from, to, subject, body)
+%s
+""" % (sent_from, to, subject, body)
     s = smtplib.SMTP(host='smtp.gmail.com.', port=587)
     s.ehlo()
     s.starttls()
@@ -166,12 +166,12 @@ if send=='y' or send=='yes':
     subject = 'Bottle Duty'
     body = 'Hi '+name+',\n your bottle duty is on the '+row[2]+'\n Save the date!\n\n Your friendly student council.'
     email_text = """\
-    From: %s
-    To: %s
-    Subject: %s
+From: %s
+To: %s
+Subject: %s
 
-    %s
-    """ % (sent_from, to, subject, body)
+%s
+""" % (sent_from, to, subject, body)
     s = smtplib.SMTP(host='smtp.gmail.com.', port=587)
     s.ehlo()
     s.starttls()
