@@ -14,5 +14,8 @@ In the folder bottle_schedule the Bottle duty schedule will appear and in the fo
 ## 2 Subsequent schedualing
 Get the Unavailability list from the Unavailabilty folder and fill it out (as before) with the unavailability dates. Input the file name when prompted. Enter month and enter year.
 In the folder bottle_schedule the Bottle duty schedule will appear and in the folder kitchen_schedule the kitchen duty schedule will appear.
-## 3 Improvements
+## 3 Sending E-mails
+Currently I am working on getting the program to send an e-mail with the date of their Kitchen/Bottle duty,
+I have managed to get it to do that (provided it is sending e mails from a gmail account with many security features turned off), however there is a bug that causes the sender e mail and subject not to display (at least on the gmail web client)
+## 4 Improvements
 If you have improvement ideas leave a comment or edit the script.
