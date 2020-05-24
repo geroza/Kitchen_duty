@@ -139,7 +139,7 @@ if send=='y' or send=='yes':
   gmail_password = getpass.getpass("Input password: ")
   
   for row in kitchen_schedule:
-    if row[0] != "nobody":
+    if row[0] in email_dict:
       name=row[0].split()[0]
       sent_from = gmail_user
       to = email_dict[row[0]]
@@ -160,7 +160,7 @@ Subject: %s
       s.close()
       print('Email sent to '+row[0])
   for row in bottle_schedule:
-    if row[0] != "nobody":
+    if row[0] in email_dict:
       name=row[0].split()
       name=name[0]
       sent_from = gmail_user
