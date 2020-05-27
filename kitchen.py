@@ -52,13 +52,16 @@ def isavailable(table, i, k):
   return 1
 def printdate(date):
   date=str(date).split('-')
+  return date[2]+'.'+date[1]+'.'+date[0]
+def printprintdate(date):
+  date=str(date).split('.')
   month_names=["January", "February", "March", "April", "May", "June", "July", "August", "September", "Ocrober", "November", "December"]
   if date[2] in ["1","21","31"]:
-    return date[2]+'st of '+month_names[int(date[1])]+' '+date[0]
+    return date[0]+'st of '+month_names[int(date[1])]+' '+date[2]
   elif date[2] in ["2","22"]:
-    return date[2]+'nd of '+month_names[int(date[1])]+' '+date[0]
+    return date[0]+'nd of '+month_names[int(date[1])]+' '+date[2]
   else:
-    return date[2]+'th of '+month_names[int(date[1])]+' '+date[0]
+    return date[0]+'th of '+month_names[int(date[1])]+' '+date[2]
   
 file=input("Enter Unavailability List: ")# We are assumsing that this list is ordered by how long ago it was that a worker has done kitchen duty (descending). If you have used this program last month fill out "unavailability_mm-yyyy.csv" and input it.
 with open('unavailability/'+file,'rt')as f:
@@ -84,25 +87,25 @@ with open('unavailability/'+file,'rt')as f:
           table.pop(i)
           table.append(w)
           indi=indi+1
-          kitchen_schedule.append([w[0], w[1] , str(days[k-1])])
+          kitchen_schedule.append([w[0], w[1] , printdate(days[k-1])])
         if isavailable(table, i, k) and indi ==1:
           w=table[i]
           table.pop(i)
           table.append(w)
           indi=indi+1
-          bottle_schedule.append([w[0], w[1] ,str(days[k-1])])
+          bottle_schedule.append([w[0], w[1] ,printdate(days[k-1])])
         if isavailable(table, i, k) and indi ==2 and bottle_schedule[-1][0]!=table[i][0]:
           w=table[i]
           table.pop(i)
           table.append(w)
           indi=indi+1
-          bottle_schedule.append([w[0],w[1], str(days[k-1])])
+          bottle_schedule.append([w[0],w[1], printdate(days[k-1])])
       if indi<3:
-        bottle_schedule.append(["nobody", "0", str(days[k-1])])
+        bottle_schedule.append(["nobody", "0", printdate(days[k-1])])
       if indi<2:
-        bottle_schedule.append(["nobody", "0", str(days[k-1])])
+        bottle_schedule.append(["nobody", "0", printdate(days[k-1])])
       if indi== 0:
-        kitchen_schedule.append(["nobody", "0", str(days[k-1])])
+        kitchen_schedule.append(["nobody", "0", printdate(days[k-1])])
     else:
       for i in range(0,n):
         if isavailable(table, i, k) and indi==0:
@@ -110,9 +113,9 @@ with open('unavailability/'+file,'rt')as f:
           table.pop(i)
           table.append(w)
           indi=1
-          kitchen_schedule.append([w[0], w[1], str(days[k-1])])
+          kitchen_schedule.append([w[0], w[1], printdate(days[k-1])])
       if indi==0:
-        kitchen_schedule.append(["nobody","0" ,str(days[k-1])])
+        kitchen_schedule.append(["nobody","0" ,printdate(days[k-1])])
   with open('kitchen_schedule/kitchen_schedule_'+monthyear(m,y)+'.csv', 'w') as csvfile: #The schedule will be saved in the directory: schedule
     schedulewriter=csv.writer(csvfile, dialect='excel')
     schedulewriter.writerow(["Kitchen schedule for "+str(m)+"-"+str(y)])
@@ -152,7 +155,7 @@ if send=='y' or send=='yes':
       sent_from = gmail_user
       to = email_dict[row[0]]
       subject = 'Kitchen Duty'
-      body = 'Hi '+name+',\n your kitchen duty is on the '+printdate(row[2])+'\n Save the date!\n\n Your friendly student council.'
+      body = 'Hi '+name+',\n your kitchen duty is on the '+printprintdate(row[2])+'\n Save the date!\n\n Your friendly student council.'
       email_text = """\
 From: %s
 To: %s
@@ -174,7 +177,7 @@ Subject: %s
       sent_from = gmail_user
       to = email_dict[row[0]]
       subject = 'Bottle Duty'
-      body = 'Hi '+name+',\n your bottle duty is on the '+printdate(row[2])+'\n Save the date!\n\n Your friendly student council.'
+      body = 'Hi '+name+',\n your bottle duty is on the '+printprintdate(row[2])+'\n Save the date!\n\n Your friendly student council.'
       email_text = """\
 From: %s
 To: %s
