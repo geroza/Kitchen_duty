@@ -126,7 +126,7 @@ with open('unavailability/'+file,'rt')as f:
     schedulewriter.writerow(["Bottle schedule for "+str(m)+"-"+str(y)])
     schedulewriter.writerow(["Name", "Room", "Day"])
     schedulewriter.writerows(bottle_schedule)  
-    new_list=[[row[0]] for row in table]
+    new_list=[[row[0],row[1]] for row in table]
   with open('unavailability/unavailability_'+nextmonthyear(m,y)+'.csv', 'w') as csvfile:#The list of workers sorted by how long ago it was that they have done kitchen duty will be saved in the directory: unavailability. Fill this out with the days in which the person is unavailable.
     listwriter=csv.writer(csvfile, dialect='excel')
     listwriter.writerows(new_list)
@@ -151,11 +151,11 @@ if send=='y' or send=='yes':
   
   for row in kitchen_schedule:
     if row[0] in email_dict:
-      name=row[0].split()[0]
+      name=row[0]
       sent_from = gmail_user
       to = email_dict[row[0]]
       subject = 'Kitchen Duty'
-      body = 'Hi '+name+',\n your kitchen duty is on the '+printprintdate(row[2])+'\n Save the date!\n\n Your friendly student council.'
+      body = 'Dear '+name+',\n your kitchen duty is on the '+printprintdate(row[2])+'\n Save the date!\n\n Greetings,\n Roman'
       email_text = """\
 From: %s
 To: %s
